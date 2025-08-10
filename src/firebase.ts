@@ -6,7 +6,8 @@ import {
   signInAnonymously, 
   signInWithPopup 
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { addDoc, collection, getFirestore, onSnapshot, orderBy, query } from "firebase/firestore";
+import type { HotTake } from "./types";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -39,3 +40,26 @@ export const signInAnon = () => signInAnonymously(auth);
 // export const signInAnon = async (): Promise<UserCredential> => {
 //   return signInAnonymously(auth);
 // };
+
+// Reference to Firestore collections
+export const takesCollection = collection(db, "hot_takes");
+
+// Add a hot take
+export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp">) => {
+  return addDoc(takesCollection, {
+    ...take,
+    timestamp: Date.now(),
+  });
+};
+
+// Subscribe to hot takes
+export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
+  const q = query(takesCollection, orderBy("timestamp", "desc"));
+  return onSnapshot(q, (snapshot) => {
+    const takes: HotTake[] = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data() as HotTake
+    }));
+    callback(takes);
+  });
+};
