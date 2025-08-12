@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { addHotTake, auth, signInAnon, signInWithGoogle, subscribeToTakes } from "../firebase";
 import type { HotTake } from "../types";
+import Navbar from "../components/Navbar";
 
 export default function Home() {
     const [takes, setTakes] = useState<HotTake[]>([]);
@@ -30,6 +31,7 @@ export default function Home() {
 
     return (
         <div className="p-4 text-white bg-gray-900 min-h-screen">
+            <Navbar />
             <h1 className="text-2xl font-bold mb-4">Hot Takes Arena</h1>
 
             {/* Sign-in buttons */}
