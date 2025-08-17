@@ -5,7 +5,7 @@ import {
   signInAnonymously, 
   signInWithPopup 
 } from "firebase/auth";
-import { addDoc, collection, getFirestore, onSnapshot, orderBy, query } from "firebase/firestore";
+import { addDoc, collection, getFirestore, onSnapshot, orderBy, query, type DocumentData } from "firebase/firestore";
 import type { HotTake } from "./types";
 
 const firebaseConfig = {
@@ -20,6 +20,7 @@ const firebaseConfig = {
 
 // Init Firebase
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 export const db = getFirestore(app);
@@ -27,19 +28,11 @@ export const db = getFirestore(app);
 // Sign-in functions
 export const signInWithGoogle = () => signInWithPopup(auth, provider);
 export const signInAnon = () => signInAnonymously(auth);
+export const signOut = () => fbSignOut(auth);
 
-// export const signInWithGoogle = async (): Promise<UserCredential> => {
-//   return signInWithPopup(auth, provider);
-// };
-
-// export const signInAnon = async (): Promise<UserCredential> => {
-//   return signInAnonymously(auth);
-// };
-
-// Reference to Firestore collections
+// Firestore takes collection
 export const takesCollection = collection(db, "hot_takes");
 
-// Add a hot take
 export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp">) => {
   return addDoc(takesCollection, {
     ...take,
@@ -47,14 +40,19 @@ export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp">) => {
   });
 };
 
-// Subscribe to hot takes
 export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
   const q = query(takesCollection, orderBy("timestamp", "desc"));
   return onSnapshot(q, (snapshot) => {
-    const takes: HotTake[] = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data() as HotTake
-    }));
-    callback(takes);
+    const list: HotTake[] = snapshot.docs.map((doc) => {
+      const data = doc.data() as DocumentData;
+      return {
+        id: doc.id,
+        text: data.text ?? "",
+        authorId: data.authorId ?? "",
+        authorName: data.authorName ?? "Anonymous",
+        timestamp: typeof data.timestamp === "number" ? data.timestamp : 0,
+      };
+    });
+    callback(list);
   });
 };
