@@ -3,7 +3,8 @@ import {
   getAuth, 
   GoogleAuthProvider, 
   signInAnonymously, 
-  signInWithPopup 
+  signInWithPopup,
+  signOut as fbSignOut,
 } from "firebase/auth";
 import { addDoc, collection, getFirestore, onSnapshot, orderBy, query, type DocumentData } from "firebase/firestore";
 import type { HotTake } from "./types";

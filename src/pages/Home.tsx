@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../auth/AuthContext";
-import type { HotTake } from "../types";
-import { subscribe } from "firebase/data-connect";
-import { addHotTake, auth, signInAnon, subscribeToTakes } from "../firebase";
 import { Link } from "react-router-dom";
+import { addHotTake, subscribeToTakes, auth, signInAnon } from "../firebase";
+import type { HotTake } from "../types";
+import { useAuth } from "../auth/AuthContext";
 import PostTakeModal from "../components/PostTakeModal";
 
 export default function Home() {
@@ -21,7 +20,7 @@ export default function Home() {
     const trimmed = text.trim();
     if (!trimmed) return;
 
-    // Ensure anonymous auth for write rules
+    // Ensure at least anonymous auth for write rules
     if (!auth.currentUser) {
       await signInAnon();
     }
@@ -38,7 +37,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6-4">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">🔥 Latest Hot Takes</h1>
         <button
           onClick={() => setOpen(true)}
@@ -50,9 +49,7 @@ export default function Home() {
 
       <div className="grid gap-4">
         {takes.length === 0 ? (
-          <div className="text-gray-500">
-            No takes yet! Be the first to post.
-          </div>
+          <div className="text-gray-500">No takes yet. Be the first!</div>
         ) : (
           takes.map((t) => (
             <Link
@@ -61,7 +58,9 @@ export default function Home() {
               className="bg-white p-4 rounded-lg shadow border hover:shadow-md transition"
             >
               <p className="text-lg">{t.text}</p>
-              <div className="text-sm text-gray-500 mt-1">by {t.authorName ?? "Anonymous"}</div>
+              <div className="text-sm text-gray-500 mt-1">
+                by {t.authorName ?? "Anonymous"}
+              </div>
             </Link>
           ))
         )}
@@ -71,8 +70,8 @@ export default function Home() {
         open={open}
         text={text}
         setText={setText}
-        onSubmit={handleSubmit}
         onClose={() => setOpen(false)}
+        onSubmit={handleSubmit}
       />
     </div>
   );
