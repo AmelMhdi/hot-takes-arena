@@ -32,7 +32,7 @@ const DebateRoom: React.FC = () => {
       <h1 className="text-xl font-bold mb-4">Debate Room</h1>
 
       <div className="space-y-2 mb-4">
-        {debate.messages.map((msg: any, idx: number) => (
+        {(debate.messages ?? []).map((msg: any, idx: number) => (
           <div
             key={idx}
             className={`p-2 rounded ${
