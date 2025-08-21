@@ -6,7 +6,7 @@ import {
   signInWithPopup,
   signOut as fbSignOut,
 } from "firebase/auth";
-import { addDoc, collection, getFirestore, onSnapshot, orderBy, query, type DocumentData } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc, type DocumentData } from "firebase/firestore";
 import type { HotTake } from "./types";
 
 const firebaseConfig = {
@@ -41,6 +41,7 @@ export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp">) => {
   });
 };
 
+// Subscribe to takes collection
 export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
   const q = query(takesCollection, orderBy("timestamp", "desc"));
   return onSnapshot(q, (snapshot) => {
@@ -55,5 +56,58 @@ export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
       };
     });
     callback(list);
+  });
+};
+
+// Reference to debates collection
+export const debatesCollection = collection(db, "debates");
+
+// Create a new debate
+export const createDebate = async (takeId: string, challengerId: string) => {
+  return addDoc(debatesCollection, {
+    takeId,
+    challengerId,
+    opponentId: null,
+    messages: [],
+    active: true,
+    createdAt: serverTimestamp(),
+  });
+};
+
+// Join a debate
+export const joinDebate = async (debateId: string, opponentId: string) => {
+  const debateRef = doc(db, "debates", debateId);
+  return updateDoc(debateRef, { opponentId });
+};
+
+// Send a message in a debate
+export const sendDebateMessage = async (
+  debateId: string,
+  uid: string,
+  text: string,
+  turn: number
+) => {
+  const debateRef = doc(db, "debates", debateId);
+  return updateDoc(debateRef, {
+    messages: arrayUnion({
+      uid,
+      text,
+      timestamp: Date.now(),
+      turn,
+    }),
+  });
+};
+
+// Subscribe to debates for a specific take
+export const subscribeToDebates = (
+  takeId: string,
+  callback: (debates: any[]) => void
+) => {
+  const q = query(debatesCollection, orderBy("createdAt", "desc"));
+  return onSnapshot(q, (snapshot) => {
+    const debates = snapshot.docs
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter((debate) => debate.takeId === takeId);
+    callback(debates);
   });
 };
