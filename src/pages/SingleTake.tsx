@@ -1,21 +1,36 @@
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { subscribeToDebates, createDebate } from "../firebase";
+import DebateList from "../components/DebateList";
 
-export default function SingleTake() {
-    const { id } = useParams();
+const SingleTake: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const [debates, setDebates] = useState<any[]>([]);
 
-    return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">Hot Take #{id}</h1>
-            <p className="mb-6">This is where the hot take content will go</p>
+  useEffect(() => {
+    if (!id) return;
+    const unsubscribe = subscribeToDebates(id, setDebates);
+    return () => unsubscribe();
+  }, [id]);
 
-            <h2 className="text-xl font-bold mb-2">Debates</h2>
-            <div className="space-y-3">
-                {[1, 2].map((reply) => (
-                    <div key={reply} className="bg-white p-3 rounded-lg shadow">
-                        Reply #{reply} — Placeholder text.
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
+  const handleStartDebate = async () => {
+    // NOTE: Replace "user123" with real currentUser.uid from auth
+    await createDebate(id!, "user123");
+  };
+
+  return (
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">Hot Take #{id}</h1>
+      <button
+        onClick={handleStartDebate}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Start a Debate
+      </button>
+
+      <DebateList debates={debates} />
+    </div>
+  );
+};
+
+export default SingleTake;
