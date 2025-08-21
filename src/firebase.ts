@@ -94,6 +94,7 @@ export const sendDebateMessage = async (
       text,
       timestamp: Date.now(),
       turn,
+      upvotes: []
     }),
   });
 };
