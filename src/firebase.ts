@@ -6,8 +6,24 @@ import {
   signInWithPopup,
   signOut as fbSignOut,
 } from "firebase/auth";
-import { addDoc, arrayUnion, collection, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc, getDoc, type DocumentData, increment, setDoc } from "firebase/firestore";
-import type { HotTake } from "./types";
+import { 
+  addDoc, 
+  arrayUnion, 
+  collection, 
+  doc, 
+  getFirestore, 
+  onSnapshot, 
+  orderBy, 
+  query, 
+  serverTimestamp, 
+  updateDoc, 
+  getDoc, 
+  increment, 
+  setDoc, 
+  getDocs, 
+  limit 
+} from "firebase/firestore";
+import type { DebateDoc, HotTake, UserStats } from "./types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAkqAguGpDYW-b86OySpzuR5gnicdD40TA",
@@ -19,48 +35,101 @@ const firebaseConfig = {
   measurementId: "G-5Y667H1X0C"
 };
 
-// Init Firebase
 const app = initializeApp(firebaseConfig);
-
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 
-// Sign-in functions
+// ------------------
+// Auth
+// ------------------
 export const signInWithGoogle = () => signInWithPopup(auth, provider);
 export const signInAnon = () => signInAnonymously(auth);
 export const signOut = () => fbSignOut(auth);
 
-// --- Hot takes collection ---
+// ------------------
+// Firestore references
+// ------------------
 export const takesCollection = collection(db, "hot_takes");
+export const usersCollection = collection(db, "users");
+export const debatesCollection = collection(db, "debates");
 
-export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp">) => {
+// ------------------
+// Hot Takes
+// ------------------
+export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp" | "votes">) => {
   return addDoc(takesCollection, {
     ...take,
     timestamp: Date.now(),
+    votes: 0,
   });
 };
 
 export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
   const q = query(takesCollection, orderBy("timestamp", "desc"));
   return onSnapshot(q, (snapshot) => {
-    const list: HotTake[] = snapshot.docs.map((doc) => {
-      const data = doc.data() as DocumentData;
-      return {
-        id: doc.id,
-        text: data.text ?? "",
-        authorId: data.authorId ?? "",
-        authorName: data.authorName ?? "Anonymous",
-        timestamp: typeof data.timestamp === "number" ? data.timestamp : 0,
-      };
-    });
-    callback(list);
+    const takes = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as HotTake[];
+    callback(takes);
   });
 };
 
-// --- Debates ---
-export const debatesCollection = collection(db, "debates");
+// ------------------
+// User Stats
+// ------------------
 
+// Ensure a user document exists before update
+const ensureUserDoc = async (uid: string, displayName: string | null) => {
+  const userRef = doc(db, "users", uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) {
+    await setDoc(userRef, {
+      uid,
+      displayName: displayName ?? "Anonymous",
+      wins: 0,
+      losses: 0,
+      upvotes: 0,
+    });
+  }
+  return userRef;
+};
+
+// Increment wins
+export const incrementWin = async (uid: string, displayName: string | null) => {
+  const userRef = await ensureUserDoc(uid, displayName);
+  await updateDoc(userRef, { wins: increment(1) });
+};
+
+// Increment losses
+export const incrementLoss = async (uid: string, displayName: string | null) => {
+  const userRef = await ensureUserDoc(uid, displayName);
+  await updateDoc(userRef, { losses: increment(1) });
+};
+
+// Increment upvotes
+export const incrementUpvotes = async (uid: string, displayName: string | null) => {
+  const userRef = await ensureUserDoc(uid, displayName);
+  await updateDoc(userRef, { upvotes: increment(1) });
+};
+
+// Get top users by wins
+export const getTopUsers = async (): Promise<UserStats[]> => {
+  const q = query(usersCollection, orderBy("wins", "desc"), limit(10));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(
+    (doc) =>
+      ({
+        uid: doc.id,
+        ...doc.data(),
+      } as UserStats)
+  );
+};
+
+// ------------------
+// Debates
+// ------------------
 export const createDebate = async (takeId: string, challengerId: string) => {
   return addDoc(debatesCollection, {
     takeId,
@@ -97,18 +166,20 @@ export const sendDebateMessage = async (
 
 export const subscribeToDebates = (
   takeId: string,
-  callback: (debates: any[]) => void
+  callback: (debates: DebateDoc[]) => void
 ) => {
   const q = query(debatesCollection, orderBy("createdAt", "desc"));
   return onSnapshot(q, (snapshot) => {
     const debates = snapshot.docs
-      .map((doc) => ({ id: doc.id, ...(doc.data() as { takeId: string }) }))
+      .map((doc) => ({ id: doc.id, ...(doc.data() as DebateDoc) }))
       .filter((debate) => debate.takeId === takeId);
     callback(debates);
   });
 };
 
-// --- Upvotes ---
+// ------------------
+// Upvotes
+// ------------------
 export const upvoteMessage = async (
   debateId: string,
   messageIndex: number,
@@ -119,7 +190,7 @@ export const upvoteMessage = async (
   if (!snap.exists()) return;
 
   const data = snap.data() as DebateDoc;
-  if (data.active) return; // ✅ only after debate ends
+  if (data.active) return; // only after debate ends
 
   const messages = Array.isArray(data.messages) ? [...data.messages] : [];
   const msg = messages[messageIndex];
@@ -135,6 +206,9 @@ export const upvoteMessage = async (
   await updateDoc(ref, { messages });
 };
 
+// ------------------
+// Debate Results
+// ------------------
 export const computeWinnerUid = (debate: DebateDoc): string | null => {
   if (!debate.challengerId || !debate.opponentId) return null;
 
@@ -143,8 +217,8 @@ export const computeWinnerUid = (debate: DebateDoc): string | null => {
 
   for (const msg of debate.messages || []) {
     const votes = (msg.upvotes || []).length;
-    if (msg.uid === debate.challengerId) challengerVotes += votes;
-    else if (msg.uid === debate.opponentId) opponentVotes += votes;
+    if (msg.userId === debate.challengerId) challengerVotes += votes;
+    else if (msg.userId === debate.opponentId) opponentVotes += votes;
   }
 
   if (challengerVotes > opponentVotes) return debate.challengerId;
@@ -166,37 +240,4 @@ export const endDebateAndSetWinner = async (debateId: string) => {
   });
 
   return winnerId;
-};
-
-// --- User stats ---
-export const incrementUserWin = async (
-  uid: string,
-  displayName: string | null
-) => {
-  const userRef = doc(db, "users", uid);
-  await setDoc(
-    userRef,
-    {
-      displayName: displayName ?? "Anonymous",
-      wins: increment(1),
-      losses: increment(0),
-    },
-    { merge: true }
-  );
-};
-
-export const incrementUserLoss = async (
-  uid: string,
-  displayName: string | null
-) => {
-  const userRef = doc(db, "users", uid);
-  await setDoc(
-    userRef,
-    {
-      displayName: displayName ?? "Anonymous",
-      wins: increment(0),
-      losses: increment(1),
-    },
-    { merge: true }
-  );
 };

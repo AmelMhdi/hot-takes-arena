@@ -1,31 +1,50 @@
+// Hot take
 export interface HotTake {
-    id?: string;
-    text: string;
-    author: string;
-    timestamp: number;
+  id: string;
+  text: string;
+  authorId: string; // Firebase UID 
+  authorName: string; // display name or "Anonymous"
+  timestamp: number;
+  votes: number;
 }
 
+// Debate message inside a debate room
 export interface DebateMessage {
-    uid: string;
-    text: string;
-    timestamp: number;
-    turn: number;
-    upvotes: string[]; // array of user IDs who upvoted this message
+  userId: string;
+  text: string;
+  timestamp: number;
+  turn: number;
+  upvotes: string[]; // array of userIds who upvoted
 }
 
-export interface DebateDoc {
-    id?: string; // Firestore document ID
-    takeId: string;
-    challengerId: string;
-    opponentId: string | null; // null if no opponent yet
-    messages: DebateMessage[];
-    active: boolean;
-    winnerId?: string | null; // user ID of the winner, null if tie
-    createdAt: any; // Firestore timestamp
+// Debate document in Firestore
+export type DebateDoc = {
+  id?: string;
+  takeId: string;
+  challengerId: string;
+  opponentId: string | null;
+  messages: DebateMessage[];
+  active: boolean;
+  createdAt?: any;
+  winnerId?: string | null;
+};
+
+// Debate session
+export interface Debate {
+  id: string;
+  topic: string;
+  status: "waiting" | "active" | "finished";
+  messages: DebateMessage[];
+  votes: Record<string, number>; // key: userId, value: votes count
+  createdAt: number;
+  endsAt: number;
 }
 
+// User statistics
 export interface UserStats {
-    displayName: string;
-    wins: number;
-    losses: number;
+  uid: string;
+  username: string;
+  wins: number;
+  losses: number;
+  upvotes: number;
 }

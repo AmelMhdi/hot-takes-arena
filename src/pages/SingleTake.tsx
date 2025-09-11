@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { subscribeToDebates, createDebate } from "../firebase";
+import { subscribeToDebates, createDebate, auth } from "../firebase";
 import DebateList from "../components/DebateList";
 
 const SingleTake: React.FC = () => {
@@ -14,8 +14,11 @@ const SingleTake: React.FC = () => {
   }, [id]);
 
   const handleStartDebate = async () => {
-    // NOTE: Replace "user123" with real currentUser.uid from auth
-    await createDebate(id!, "user123");
+    if (!auth.currentUser) {
+      alert("Please log in to start a debate.");
+      return;
+    }
+    await createDebate(id!, auth.currentUser.uid);
   };
 
   return (

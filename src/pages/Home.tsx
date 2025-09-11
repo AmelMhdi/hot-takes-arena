@@ -20,14 +20,14 @@ export default function Home() {
     const trimmed = text.trim();
     if (!trimmed) return;
 
-    // Ensure at least anonymous auth for write rules
+    // Ensure anonymous auth for write rules
     if (!auth.currentUser) {
       await signInAnon();
     }
 
     await addHotTake({
       text: trimmed,
-      authorId: auth.currentUser?.uid ?? "anon",
+      authorId: auth.currentUser?.uid || "anon",
       authorName: auth.currentUser?.displayName ?? "Anonymous",
     });
 

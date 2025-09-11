@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { auth, db, endDebateAndSetWinner, incrementUserLoss, incrementUserWin, sendDebateMessage, subscribeToDebates, upvoteMessage } from "../firebase";
-import { doc, increment, onSnapshot } from "firebase/firestore";
+
+import { 
+  auth, 
+  endDebateAndSetWinner, 
+  incrementWin, 
+  sendDebateMessage, 
+  subscribeToDebates, 
+  upvoteMessage 
+} from "../firebase";
 import type { DebateDoc } from "../types";
 
-const DebateRoom: React.FC = ({ takeId }) => {
+interface Props {
+  takeId: string;
+}
+
+const DebateRoom: React.FC<Props> = ({ takeId }) => {
   const [debates, setDebates] = useState<DebateDoc[]>([]);
   const [input, setInput] = useState("");
   const user = auth.currentUser;
@@ -19,7 +29,12 @@ const DebateRoom: React.FC = ({ takeId }) => {
 
   const handleSend = async () => {
     if (!user || !input.trim()) return;
-    await sendDebateMessage(debate.id!, user.uid, input, debate.messages.length);
+    await sendDebateMessage(
+      debate.id!, 
+      user.uid, 
+      input, 
+      debate.messages.length
+    );
     setInput("");
   };
 
@@ -32,12 +47,8 @@ const DebateRoom: React.FC = ({ takeId }) => {
     if (!debate.id) return;
     const winnerId = await endDebateAndSetWinner(debate.id);
 
-    if (winnerId && user) {
-      if (winnerId === user.uid) {
-        await incrementUserWin(user.uid, user.displayName);
-      } else {
-        await incrementUserLoss(user.uid, user.displayName);
-      }
+    if (winnerId && user && winnerId === user.uid) {
+      await incrementWin(user.uid, user.displayName);
     }
   };
 
@@ -54,10 +65,19 @@ const DebateRoom: React.FC = ({ takeId }) => {
       )}
 
       <div className="my-4 space-y-2">
-        {debate.messages.map((m, idx) => {
-          <div key={idx} className="flex items-center justify-between border p-2 rounded">
+        {debate.messages.map((m, idx) => (
+          <div 
+            key={idx} 
+            className="flex items-center justify-between border p-2 rounded"
+          >
             <span>
-              <b>{m.uid === debate.challengerId ? "Challenger" : "Opponent"}</b>{" "}{m.text}
+              <b>
+                {m.userId === debate.challengerId 
+                  ? "Challenger" 
+                  : "Opponent"
+                }
+              </b>{" "}
+              {m.text}
             </span>
             <div className="flex items-center space-x-2">
               <span>{m.upvotes?.length || 0} 👍</span>
@@ -74,7 +94,7 @@ const DebateRoom: React.FC = ({ takeId }) => {
               </button>
             </div>
           </div>
-        })}
+        ))}
       </div>
 
       {debate.active && (
@@ -85,11 +105,16 @@ const DebateRoom: React.FC = ({ takeId }) => {
             placeholder="Your argument..."
             className="border p-2 rounded"
           />
-          <button onClick={handleSend}
-          className="bg-green-500 text-white px-4 py-2 rounded">
+          <button 
+            onClick={handleSend}
+            className="bg-green-500 text-white px-4 py-2 rounded"
+          >
             Send
           </button>
-          <button onClick={handleEnd} className="bg-red-500 text-white px-4 py-2 rounded">
+          <button 
+            onClick={handleEnd} 
+            className="bg-red-500 text-white px-4 py-2 rounded"
+          >
             End Debate
           </button>
         </div>

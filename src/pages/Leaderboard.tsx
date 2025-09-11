@@ -1,43 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { db } from "../firebase";
+import { getTopUsers } from "../firebase";
+import type { UserStats } from "../types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Leaderboard: React.FC = () => {
-  const [users, setUsers] = useState<any[]>([]);
+  const [leaders, setLeaders] = useState<UserStats[]>([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const q = query(collection(db, "users"), orderBy("wins", "desc"));
-      const snap = await getDocs(q);
-      const list = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setUsers(list);
+    const fetchLeaders = async () => {
+      const data = await getTopUsers();
+      setLeaders(data);
     };
-    fetchUsers();
+    fetchLeaders();
   }, []);
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">🏆 Leaderboard</h1>
-      <table className="w-full border-collapse border">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="p-2 border">Rank</th>
-            <th className="p-2 border">Player</th>
-            <th className="p-2 border">Wins</th>
-            <th className="p-2 border">Losses</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u, i) => (
-            <tr key={u.id} className="text-center">
-              <td className="p-2 border">{i + 1}</td>
-              <td className="p-2 border">{u.displayName || "Anonymous"}</td>
-              <td className="p-2 border">{u.wins || 0}</td>
-              <td className="p-2 border">{u.losses || 0}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="max-w-3xl mx-auto p-6">
+      <Card className="shadow-lg rounded-2xl">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center">
+            Leaderboard
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {leaders.map((user, index) => (
+              <div
+                key={user.uid}
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm"
+              >
+                {/* Rank + Avatar */}
+                <div className="flex items-center space-x-4">
+                  <div className="text-lg font-bold text-gray-600">
+                    #{index + 1}
+                  </div>
+                  <Avatar>
+                    <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium">{user.username}</span>
+                </div>
+                {/* Stats */}
+                <div className="text-right">
+                  <p className="font-bold text-green-600">
+                    {user.wins} Wins
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {user.upvotes} Upvotes
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
