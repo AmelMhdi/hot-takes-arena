@@ -1,64 +1,134 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { signInAnon, signInWithGoogle, signOut } from "../firebase";
+import { Home, LogOut, Trophy, User } from "lucide-react";
+import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export default function Navbar() {
   const { user, loading } = useAuth();
 
   return (
-    <nav className="bg-gray-900 text-white px-6 py-4 flex items-center justify-between shadow-md">
-      <Link to="/" className="text-xl font-bold tracking-wide">
-        🎯 Hot Takes Arena
-      </Link>
+    <header className="bg-card/95 border-b border-border sticky top-0 z-50 backdrop-blur-sm">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <h1 className="text-xl font-serif font-bold text-foreground hover:text-primary transition-colors">
+              Hot Takes Arena
+            </h1>
+          </Link>
 
-      <div className="flex items-center gap-4">
-        <Link to="/" className="hover:text-yellow-400">Home</Link>
-        <Link to="/leaderboard" className="hover:text-yellow-400">Leaderboard</Link>
+          {/* Navigation - Desktop */}
+          <nav className="hidden md:flex items-center gap-6">
+            <Button variant="ghost" size="sm" className="gap-2" asChild>
+              <Link to="/">
+                <Home className="h-4 w-4" />
+                Home
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" className="gap-2" asChild>
+              <Link to="/leaderboard">
+                <Trophy className="h-4 w-4" />
+                Leaderboard
+              </Link>
+            </Button>
+          </nav>
 
-        {loading ? (
-          <span className="text-gray-400">Loading…</span>
-        ) : user ? (
+          {/* Right side actions */}
           <div className="flex items-center gap-3">
-            {user.photoURL ? (
-              <img
-                src={user.photoURL}
-                alt="avatar"
-                className="w-8 h-8 rounded-full"
-                referrerPolicy="no-referrer"
-              />
+            {/* Post Hot Take Button - Only show when authenticated */}
+            {user && (
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium hidden sm:flex">
+                Post Hot Take
+              </Button>
+            )}
+
+            {/* Auth Section */}
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+                <span className="text-sm text-muted-foreground">Loading...</span>
+              </div>
+            ) : user ? (
+              // Authenticated User
+              <div className="flex items-center gap-3">
+                <Avatar className="h-8 w-8">
+                  {user.photoURL ? (
+                    <AvatarImage 
+                      src={user.photoURL} 
+                      alt={user.displayName || "User avatar"}
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : null}
+                  <AvatarFallback className="bg-secondary text-secondary-foreground text-sm font-medium">
+                    {user.displayName?.[0]?.toUpperCase() || 
+                     user.email?.[0]?.toUpperCase() || 
+                     "A"}
+                  </AvatarFallback>
+                </Avatar>
+                
+                <span className="hidden sm:inline text-sm text-muted-foreground max-w-24 truncate">
+                  {user.displayName || "Anonymous"}
+                </span>
+                
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={signOut}
+                  className="text-muted-foreground hover:text-foreground gap-2"
+                  title="Sign Out"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="sr-only sm:not-sr-only">Sign Out</span>
+                </Button>
+              </div>
             ) : (
-              <div className="w-8 h-8 rounded-full bg-yellow-400 text-black grid place-items-center font-bold">
-                {user.displayName?.[0]?.toUpperCase() ?? "A"}
+              // Not Authenticated
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={signInWithGoogle}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                  size="sm"
+                >
+                  Sign in with Google
+                </Button>
+                <Button
+                  onClick={signInAnon}
+                  variant="secondary"
+                  size="sm"
+                  title="Continue as guest"
+                  className="gap-2"
+                >
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">Guest</span>
+                </Button>
               </div>
             )}
-            <span className="hidden sm:block text-sm text-gray-300">
-              {user.displayName ?? "Anonymous"}
-            </span>
-            <button
-              onClick={signOut}
-              className="bg-yellow-400 hover:bg-yellow-300 text-black px-3 py-1 rounded-md"
-            >
-              Sign Out
-            </button>
           </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={signInWithGoogle}
-              className="bg-yellow-400 hover:bg-yellow-300 text-black px-3 py-1 rounded-md"
-            >
-              Sign in with Google
-            </button>
-            <button
-              onClick={signInAnon}
-              className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-md"
-              title="Continue as guest"
-            >
-              Guest
-            </button>
-          </div>
-        )}
+        </div>
+
+        {/* Mobile Navigation */}
+        <nav className="flex md:hidden items-center justify-center gap-4 pt-3 border-t border-border/50 mt-3">
+          <Button variant="ghost" size="sm" className="gap-2 flex-1" asChild>
+            <Link to="/">
+              <Home className="h-4 w-4" />
+              Home
+            </Link>
+          </Button>
+          <Button variant="ghost" size="sm" className="gap-2 flex-1" asChild>
+            <Link to="/leaderboard">
+              <Trophy className="h-4 w-4" />
+              Leaderboard
+            </Link>
+          </Button>
+          {user && (
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium flex-1" size="sm">
+              Post Take
+            </Button>
+          )}
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 }
