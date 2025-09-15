@@ -11,7 +11,7 @@ const DebateList: React.FC<DebateListProps> = ({ debates }) => {
   }
 
   return (
-    <div className="mt-4 space-y-2">
+    <div className="êspace-y-4">
       {debates.map((debate) => (
         <Link
           key={debate.id}

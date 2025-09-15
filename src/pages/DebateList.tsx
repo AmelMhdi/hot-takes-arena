@@ -11,11 +11,11 @@ const DebateList: React.FC<DebateListProps> = ({ debates }) => {
     }
 
     return (
-        <div className="space-y-3 mt-4">
+        <div className="space-y-4">
             {debates.map((debate) => (
                 <div
                     key={debate.id}
-                    className="p-3 border rounded bg-white shadow hover:shadow-md transition"
+                    className="p-3 border-border rounded bg-white shadow hover:shadow-md transition"
                 >
                     <p className="font-semibold">
                         Debate #{debate.id?.slice(0, 6)} —{" "}
