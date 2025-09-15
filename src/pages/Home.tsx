@@ -38,13 +38,13 @@ export default function Home() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-serif text-4xl font-bold text-gray-900 mb-2 text-balance">🔥 Latest Hot Takes</h1>
-          <p className="font-sans text-lg text-gray-600">Share your boldest opinions and spark meaningful debates</p>
+          <h1 className="font-serif text-4xl font-bold text-foreground mb-2 text-balance">🔥 Latest Hot Takes</h1>
+          <p className="font-sans text-lg text-secondary">Share your boldest opinions and spark meaningful debates</p>
         </div>
 
         <button
           onClick={() => setOpen(true)}
-          className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+          className="bg-primary hover:bg-foreground text-primary-foreground font-medium px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
         >
           Post Hot Take
         </button>
@@ -54,8 +54,8 @@ export default function Home() {
         {takes.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">🤔</div>
-             <h3 className="font-serif text-2xl font-semibold text-gray-700 mb-2">No takes yet</h3>
-            <p className="font-sans text-gray-500">
+             <h3 className="font-serif text-2xl font-semibold text-primary mb-2">No takes yet</h3>
+            <p className="font-sans text-secondary">
               Be the first to share a hot take and get the conversation started!
             </p>
           </div>
@@ -64,12 +64,12 @@ export default function Home() {
             <Link
               to={`/take/${t.id}`}
               key={t.id}
-              className="group bg-white p-6 rounded-2xl shadow-card hover:shadow-card-hover border border-gray-100 transition-all duration-300 hover:border-amber-200"
+              className="group bg-card p-6 rounded-2xl shadow-card hover:shadow-card-hover border border-border transition-all duration-300 hover:border-secondary"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                   <p className="font-sans text-lg leading-relaxed text-gray-800 mb-3 text-balance">{t.text}</p>
-                   <div className="flex items-center space-x-4 text-sm text-gray-500">
+                   <p className="font-sans text-lg leading-relaxed text-card-foreground mb-3 text-balance">{t.text}</p>
+                   <div className="flex items-center space-x-4 text-sm text-secondary">
                     <span className="font-medium">by {t.author ?? "Anonymous"}</span>
                     <span>•</span>
                     <span>{new Date(t.timestamp).toLocaleDateString()}</span>
