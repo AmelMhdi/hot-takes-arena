@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { auth, db, endDebateAndSetWinner, incrementUserLoss, incrementUserWin, sendDebateMessage, subscribeToDebates, upvoteMessage } from "../firebase";
-import { doc, increment, onSnapshot } from "firebase/firestore";
+import { auth, endDebateAndSetWinner, incrementUserLoss, incrementUserWin, sendDebateMessage, subscribeToDebates, upvoteMessage } from "../firebase";
 import type { DebateDoc } from "../types";
 
-const DebateRoom: React.FC = ({ takeId }) => {
+interface DebateRoomProps {
+  takeId: string;
+}
+
+const DebateRoom: React.FC<DebateRoomProps> = ({ takeId }) => {
   const [debates, setDebates] = useState<DebateDoc[]>([]);
   const [input, setInput] = useState("");
   const user = auth.currentUser;
@@ -46,7 +48,7 @@ const DebateRoom: React.FC = ({ takeId }) => {
       <h2 className="text-xl font-bold">Debate Room</h2>
 
       {debate.winnerId ? (
-        <p className="text-green-600 font-semibold">
+        <p className="font-semibold">
           Winner: {debate.winnerId === debate.challengerId ? "Challenger" : "Opponent"}
         </p>
       ) : (
@@ -54,7 +56,7 @@ const DebateRoom: React.FC = ({ takeId }) => {
       )}
 
       <div className="my-4 space-y-2">
-        {debate.messages.map((m, idx) => {
+        {debate.messages.map((m, idx) => (
           <div key={idx} className="flex items-center justify-between border p-2 rounded">
             <span>
               <b>{m.uid === debate.challengerId ? "Challenger" : "Opponent"}</b>{" "}{m.text}
@@ -74,7 +76,7 @@ const DebateRoom: React.FC = ({ takeId }) => {
               </button>
             </div>
           </div>
-        })}
+        ))}
       </div>
 
       {debate.active && (
@@ -86,10 +88,10 @@ const DebateRoom: React.FC = ({ takeId }) => {
             className="border p-2 rounded"
           />
           <button onClick={handleSend}
-          className="bg-green-500 text-white px-4 py-2 rounded">
+          className="px-4 py-2 rounded">
             Send
           </button>
-          <button onClick={handleEnd} className="bg-red-500 text-white px-4 py-2 rounded">
+          <button onClick={handleEnd} className="px-4 py-2 rounded">
             End Debate
           </button>
         </div>

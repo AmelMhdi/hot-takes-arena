@@ -24,14 +24,14 @@ export default function PostTakeModal({
 
     return (
         <div className="fixed inset-0 z-50">
-            <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-lg bg-white rounded-xl shadow-xl p-5">
+            <div className="absolute inset-0 " onClick={onClose} />
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-lg rounded-xl shadow-xl p-5">
                 <h2 className="text-xl font-semibold mb-3">Post a Hot Take</h2>
                 <textarea 
                     value={text}
                     onChange={(e) => setText(e.target.value.slice(0, maxLen))}
                     placeholder="Your blistering opinion..."
-                    className="w-full h-32 p-3 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    className="w-full h-32 p-3 border rounded focus:outline-none focus:ring-2"
                 />
                 <div className="mt-2 flex items-center justify-between text-sm">
                     <span className={remaining < 0 ? "text-red-600" : "text-gray-500"}>
@@ -43,7 +43,7 @@ export default function PostTakeModal({
                             Cancel
                         </button>
                         <button onClick={onSubmit}
-                        disabled={!text.trim()}              className="px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-300 text-black disabled:opacity-50">
+                        disabled={!text.trim()}              className="px-3 py-1 rounded disabled:opacity-50">
                             Post
                         </button>
                     </div>

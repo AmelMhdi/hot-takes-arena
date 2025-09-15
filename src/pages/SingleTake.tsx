@@ -23,7 +23,7 @@ const SingleTake: React.FC = () => {
       <h1 className="text-xl font-bold mb-4">Hot Take #{id}</h1>
       <button
         onClick={handleStartDebate}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="px-4 py-2 rounded"
       >
         Start a Debate
       </button>

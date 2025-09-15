@@ -17,10 +17,10 @@ const Leaderboard: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">🏆 Leaderboard</h1>
+      <h1 className="text-2xl mb-4">🏆 Leaderboard</h1>
       <table className="w-full border-collapse border">
         <thead>
-          <tr className="bg-gray-200">
+          <tr>
             <th className="p-2 border">Rank</th>
             <th className="p-2 border">Player</th>
             <th className="p-2 border">Wins</th>
