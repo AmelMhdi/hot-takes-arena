@@ -1,13 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+interface Debate {
+  id: string;
+  active: boolean;
+}
+
 interface DebateListProps {
-  debates: any[];
+  debates: Debate[];
 }
 
 const DebateList: React.FC<DebateListProps> = ({ debates }) => {
   if (debates.length === 0) {
-    return <p className="mt-4 text-gray-500">No debates yet.</p>;
+    return <p className="mt-4">No debates yet.</p>;
   }
 
   return (
@@ -16,7 +21,6 @@ const DebateList: React.FC<DebateListProps> = ({ debates }) => {
         <Link
           key={debate.id}
           to={`/debate/${debate.id}`}
-          className="block p-3 border rounded hover:bg-gray-100"
         >
           Debate {debate.id.slice(0, 6)} —{" "}
           {debate.active ? "In Progress" : "Finished"}
