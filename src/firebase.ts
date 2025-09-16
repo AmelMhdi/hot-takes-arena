@@ -7,7 +7,8 @@ import {
   signOut as fbSignOut,
 } from "firebase/auth";
 import { addDoc, arrayUnion, collection, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc, getDoc, type DocumentData, increment, setDoc } from "firebase/firestore";
-import type { HotTake } from "./types";
+import type { DebateDoc, HotTake, UserStats } from "./types";
+import { useId } from "react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAkqAguGpDYW-b86OySpzuR5gnicdD40TA",
@@ -49,8 +50,7 @@ export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
       return {
         id: doc.id,
         text: data.text ?? "",
-        authorId: data.authorId ?? "",
-        authorName: data.authorName ?? "Anonymous",
+        author: data.authorName ?? "Anonymous",
         timestamp: typeof data.timestamp === "number" ? data.timestamp : 0,
       };
     });
@@ -199,4 +199,28 @@ export const incrementUserLoss = async (
     },
     { merge: true }
   );
+};
+
+/**
+ * Ensure a user document exists and merge basic profile fields.
+ * Call this when the user signs in.
+ */
+export const ensureUserProfile = async (
+  uid: string,
+  displayName: string | null,
+  photoUrl?: string | null
+) => {
+  const userRef = doc(db, "users", uid);
+  await setDoc(
+    userRef,
+    {
+      uid,
+      displayName: displayName ?? "Anonymous",
+      photoUrl: photoUrl ?? null,
+      wins: increment(0),
+      losses: increment(0),
+    },
+    { merge: true }
+  );
+  return userRef;
 };

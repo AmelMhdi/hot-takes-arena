@@ -18,8 +18,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/take/:id" element={<SingleTake />} />
-            <Route path="/debate/:takeId" element={<DebateRoom />} />
+            <Route path="/take/:takeId" element={<SingleTake />} />
+            <Route path="/debate/:debateId" element={<DebateRoom />} />
           </Routes>
         </Layout>
       </AuthProvider>

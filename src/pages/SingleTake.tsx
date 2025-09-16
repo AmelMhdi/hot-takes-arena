@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { subscribeToDebates, createDebate } from "../firebase";
+import { subscribeToDebates, createDebate, auth } from "../firebase";
 import DebateList from "../components/DebateList";
 
 const SingleTake: React.FC = () => {
@@ -14,16 +14,19 @@ const SingleTake: React.FC = () => {
   }, [id]);
 
   const handleStartDebate = async () => {
-    // NOTE: Replace "user123" with real currentUser.uid from auth
-    await createDebate(id!, "user123");
+    if (!auth.currentUser) {
+      alert("You must be signed in to start a debate.");
+      return;
+    }
+    await createDebate(id!, auth.currentUser.uid);
   };
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Hot Take #{id}</h1>
+      <h1 className="text-xl font-bold mb-4 text-charcoal-900">Hot Take #{id}</h1>
       <button
         onClick={handleStartDebate}
-        className="px-4 py-2 rounded"
+        className="px-4 py-2 rounded-lg bg-sage-600 hover:bg-sage-700 text-cream-50 font-medium transition-colors duration-200"
       >
         Start a Debate
       </button>
