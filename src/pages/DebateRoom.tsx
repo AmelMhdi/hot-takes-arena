@@ -6,24 +6,25 @@ import {
   incrementUserLoss, 
   incrementUserWin, 
   sendDebateMessage, 
-  subscribeToDebates, 
+  subscribeToDebate, 
   upvoteMessage 
 } from "../firebase";
 import type { DebateDoc } from "../types";
 
 const DebateRoom: React.FC = () => {
-  const { takeId } = useParams<{ takeId: string }>();
-  const [debates, setDebates] = useState<DebateDoc[]>([]);
+  const { debateId } = useParams<{ debateId: string }>();
+  const [debate, setDebate] = useState<DebateDoc | null>(null);
   const [input, setInput] = useState("");
   const user = auth.currentUser;
 
   useEffect(() => {
-    if (!takeId) return;
-    const unsub = subscribeToDebates(takeId, setDebates);
+    if (!debateId) return;
+    const unsub = subscribeToDebate(debateId, setDebate);
     return () => unsub();
-  }, [takeId]);
+  }, [debateId]);
 
-  const debate = debates[0]; // MVP: show the first debate only
+
+  console.log(debate?.id);
   if (!debate) return <p>No debate yet.</p>;
 
   const handleSend = async () => {

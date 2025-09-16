@@ -14,7 +14,7 @@ export interface DebateMessage {
 }
 
 export interface DebateDoc {
-    id?: string; // Firestore document ID
+    id: string; // Firestore document ID
     takeId: string;
     challengerId: string;
     opponentId: string | null; // null if no opponent yet

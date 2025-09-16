@@ -108,6 +108,32 @@ export const subscribeToDebates = (
   });
 };
 
+export const subscribeToDebate = (
+  debateId: string,
+  callback: (debate: DebateDoc | null) => void
+) => {
+  const ref = doc(db, "debates", debateId);
+  const unsub = onSnapshot(ref, (snap) => {
+    if (!snap.exists()) {
+      callback(null);
+      return;
+    }
+    const data = snap.data() as any;
+    const debate: DebateDoc = {
+      id: snap.id,
+      takeId: data.takeId,
+      challengerId: data.challengerId,
+      opponentId: data.opponentId,
+      messages: Array.isArray(data.messages) ? data.messages : [],
+      active: data.active,
+      winnerId: data.winnerId ?? null,
+      createdAt: data.createdAt,
+    };
+    callback(debate);
+  });
+  return unsub;
+}
+
 // --- Upvotes ---
 export const upvoteMessage = async (
   debateId: string,
