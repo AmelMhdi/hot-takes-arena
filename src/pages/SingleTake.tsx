@@ -123,7 +123,6 @@ const SingleTake: React.FC = () => {
 
       {/* List of debates */}
       <div>
-        <h2 className="text-lg font-semibold text-charcoal-900 mb-2">Debates {debates.length}</h2>
         <DebateList debates={debates} />
       </div>
     </div>
