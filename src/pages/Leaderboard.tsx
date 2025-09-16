@@ -17,27 +17,29 @@ const Leaderboard: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl mb-4">🏆 Leaderboard</h1>
-      <table className="w-full border-collapse border">
-        <thead>
-          <tr>
-            <th className="p-2 border">Rank</th>
-            <th className="p-2 border">Player</th>
-            <th className="p-2 border">Wins</th>
-            <th className="p-2 border">Losses</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u, i) => (
-            <tr key={u.id} className="text-center">
-              <td className="p-2 border">{i + 1}</td>
-              <td className="p-2 border">{u.displayName || "Anonymous"}</td>
-              <td className="p-2 border">{u.wins || 0}</td>
-              <td className="p-2 border">{u.losses || 0}</td>
+      <h1 className="text-2xl mb-4 font-bold text-charcoal-900">🏆 Leaderboard</h1>
+      <div className="overflow-hidden rounded-lg border border-sage-200 bg-cream-50">
+        <table className="w-full">
+          <thead className="bg-sage-100">
+            <tr>
+              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">Rank</th>
+              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">Player</th>
+              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">Wins</th>
+              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">Losses</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((u, i) => (
+              <tr key={u.id} className="hover:bg-cream-100 transition-colors">
+                <td className="p-3 text-charcoal-700 border-b border-stone-200">{i + 1}</td>
+                <td className="p-3 text-charcoal-800 font-medium border-b border-stone-200">{u.displayName || "Anonymous"}</td>
+                <td className="p-3 text-sage-600 font-semibold border-b border-stone-200">{u.wins || 0}</td>
+                <td className="p-3 text-stone-500 border-b border-stone-200">{u.losses || 0}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
