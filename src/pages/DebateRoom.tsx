@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { auth, endDebateAndSetWinner, incrementUserLoss, incrementUserWin, sendDebateMessage, subscribeToDebates, upvoteMessage } from "../firebase";
+import { useParams } from "react-router-dom";
+import { 
+  auth, 
+  endDebateAndSetWinner, 
+  incrementUserLoss, 
+  incrementUserWin, 
+  sendDebateMessage, 
+  subscribeToDebates, 
+  upvoteMessage 
+} from "../firebase";
 import type { DebateDoc } from "../types";
 
-interface DebateRoomProps {
-  takeId: string;
-}
-
-const DebateRoom: React.FC<DebateRoomProps> = ({ takeId }) => {
+const DebateRoom: React.FC = () => {
+  const { takeId } = useParams<{ takeId: string }>();
   const [debates, setDebates] = useState<DebateDoc[]>([]);
   const [input, setInput] = useState("");
   const user = auth.currentUser;
 
   useEffect(() => {
+    if (!takeId) return;
     const unsub = subscribeToDebates(takeId, setDebates);
     return () => unsub();
   }, [takeId]);
@@ -44,32 +51,40 @@ const DebateRoom: React.FC<DebateRoomProps> = ({ takeId }) => {
   };
 
   return (
-    <div className="p-4 rounded">
-      <h2 className="text-xl font-bold">Debate Room</h2>
+    <div className="p-6 rounded-xl bg-cream-100 border border-stone-200 shadow-sm">
+      <h2 className="text-2xl font-bold text-charcoal-900 mb-4">Debate Room</h2>
 
       {debate.winnerId ? (
-        <p className="font-semibold">
+        <p className="font-semibold text-sage-700 bg-sage-50 p-3 rounded-lg border border-sage-200">
           Winner: {debate.winnerId === debate.challengerId ? "Challenger" : "Opponent"}
         </p>
       ) : (
-        !debate.active && <p className="text-gray-500">Result: Tie</p>
+        !debate.active && (
+          <p className="text-stone-600 bg-stone-50 p-3 rounded-lg border border-stone-200">Result: Tie</p>
+        )
       )}
 
-      <div className="my-4 space-y-2">
+      <div className="my-6 space-y-3">
         {debate.messages.map((m, idx) => (
-          <div key={idx} className="flex items-center justify-between border p-2 rounded">
-            <span>
-              <b>{m.uid === debate.challengerId ? "Challenger" : "Opponent"}</b>{" "}{m.text}
+          <div 
+            key={idx} 
+            className="flex items-center justify-between bg-cream-50 border border-stone-200 p-4 rounded-lg hover:bg-cream-100 transition-colors duration-200"
+          >
+            <span className="text-charcoal-800">
+              <b className="text-charcoal-900">
+                {m.uid === debate.challengerId ? "Challenger" : "Opponent"}
+              </b>{" "}
+              {m.text}
             </span>
             <div className="flex items-center space-x-2">
-              <span>{m.upvotes?.length || 0} 👍</span>
+              <span className="text-peach-600 font-medium">{m.upvotes?.length || 0} 👍</span>
               <button 
                 disabled={debate.active}
                 onClick={() => handleUpvote(idx)}
-                className={`px-2 py-1 text-sm rounded ${
+                className={`px-3 py-2 text-sm rounded-lg font-medium transition-colors duration-200 ${
                   debate.active
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
+                    ? "bg-stone-200 text-stone-500 cursor-not-allowed"
+                    : "bg-sage-500 text-cream-50 hover:bg-sage-600 active:bg-sage-700"
                 }`}
               >
                 Upvote
@@ -80,18 +95,23 @@ const DebateRoom: React.FC<DebateRoomProps> = ({ takeId }) => {
       </div>
 
       {debate.active && (
-        <div className="space-x-2">
+        <div className="flex gap-3 mt-6">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Your argument..."
-            className="border p-2 rounded"
+            className="flex-1 bg-cream-100 border border-stone-300 rounded-lg px-4 py-3 text-charcoal-800 placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200"
           />
-          <button onClick={handleSend}
-          className="px-4 py-2 rounded">
+          <button 
+            onClick={handleSend}
+            className="bg-sage-600 hover:bg-sage-700 active:bg-sage-800 text-cream-50 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+          >
             Send
           </button>
-          <button onClick={handleEnd} className="px-4 py-2 rounded">
+          <button 
+            onClick={handleEnd}
+            className="bg-rose-500 hover:bg-rose-600 active:bg-rose-700 text-cream-50 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+          >
             End Debate
           </button>
         </div>

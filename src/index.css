@@ -1,68 +1,89 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss/base';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-@layer base{
-  :root {
-    /* Typography */
-    --font-serif: "Playfair Display", serif;
-    --font-sans: "Inter", sans-serif;
-    
-    --background: 239 246 224; /* #eff6e0 */
-    --foreground: 1 22 30; /* #01161e */
-    --card: 255 255 255; /* #ffffff */
-    --card-foreground: 1 22 30; /* #01161e */
-    --primary: 18 69 89; /* #124559 */
-    --primary-foreground: 239 246 224; /* #eff6e0 */
-    --secondary: 89 131 146; /* #598392 */
-    --secondary-foreground: 239 246 224; /* #eff6e0 */
-    --accent: 174 195 176; /* #aec3b0 */
-    --accent-foreground: 1 22 30; /* #01161e */
-    --muted: 239 246 224; /* #eff6e0 */
-    --muted-foreground: 89 131 146; /* #598392 */
-    --border: 174 195 176; /* #aec3b0 */
-    --ring: 18 69 89; /* #124559 */
-    
-    /* Custom shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+@layer base {
+  * {
+    @apply border-stone-200;
+  }
+  
+  body {
+    @apply bg-cream-50 text-charcoal-800 font-sans antialiased;
+    @apply selection:bg-sage-200 selection:text-sage-800;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-charcoal-900 font-medium tracking-tight;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-cream-100;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-stone-300 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-stone-400;
   }
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer components {
+  /* Primary button */
+  .btn-primary {
+    @apply bg-sage-600 hover:bg-sage-700 text-cream-50 px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+  
+  /* Secondary button */
+  .btn-secondary {
+    @apply bg-stone-200 hover:bg-stone-300 text-charcoal-700 px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+  
+  /* Accent button */
+  .btn-accent {
+    @apply bg-peach-500 hover:bg-peach-600 text-cream-50 px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+  
+  /* Card component */
+  .card {
+    @apply bg-cream-100 border border-stone-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+  
+  /* Input styling */
+  .input {
+    @apply bg-cream-100 border border-stone-300 rounded-lg px-3 py-2 text-charcoal-800 placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all duration-200;
+  }
+  
+  /* Hot take styling */
+  .hot-take {
+    @apply border-l-4 border-peach-400 bg-gradient-to-r from-peach-50 to-cream-50 p-4 rounded-r-lg;
+  }
+  
+  /* Controversial opinion styling */
+  .controversial {
+    @apply border-l-4 border-rose-400 bg-gradient-to-r from-rose-50 to-cream-50 p-4 rounded-r-lg;
+  }
 }
 
-body {
-  font-family: var(--font-sans);
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.font-serif {
-  font-family: var(--font-serif);
-}
-
-.font-sans {
-  font-family: var(--font-sans);
-}
-
-.shadow-card {
-  box-shadow: var(--shadow-md);
-}
-
-.shadow-card-hover {
-  box-shadow: var(--shadow-lg);
-}
-
-.text-balance {
-  text-wrap: balance;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-sage-600 to-plum-600 bg-clip-text text-transparent;
+  }
+  
+  .glass-effect {
+    @apply bg-cream-100/80 backdrop-blur-sm border border-stone-200/50;
+  }
 }
