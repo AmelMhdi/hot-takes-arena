@@ -23,12 +23,10 @@ const DebateRoom: React.FC = () => {
     return () => unsub();
   }, [debateId]);
 
-
-  console.log(debate?.id);
   if (!debate) return <p>No debate yet.</p>;
 
   const handleSend = async () => {
-    if (!user || !input.trim()) return;
+    if (!user || !input) return;
     await sendDebateMessage(debate.id!, user.uid, input, debate.messages.length);
     setInput("");
   };

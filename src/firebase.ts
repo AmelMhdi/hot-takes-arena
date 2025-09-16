@@ -7,8 +7,7 @@ import {
   signOut as fbSignOut,
 } from "firebase/auth";
 import { addDoc, arrayUnion, collection, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc, getDoc, type DocumentData, increment, setDoc } from "firebase/firestore";
-import type { DebateDoc, HotTake, UserStats } from "./types";
-import { useId } from "react";
+import type { DebateDoc, HotTake } from "./types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAkqAguGpDYW-b86OySpzuR5gnicdD40TA",
