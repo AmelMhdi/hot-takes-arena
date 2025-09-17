@@ -98,7 +98,6 @@ export const sendDebateMessage = async (
   turn: number
 ) => {
   const debateRef = doc(db, "debates", debateId);
-  console.log("Writing to debate:", debateId, uid, text, turn);
   return updateDoc(debateRef, {
     messages: arrayUnion({
       uid,

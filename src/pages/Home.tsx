@@ -21,14 +21,18 @@ export default function Home() {
     if (!trimmed) return;
 
     // Ensure at least anonymous auth for write rules
-    if (!auth.currentUser) {
+    if (!user) {
       await signInAnon();
     }
 
+    console.log("Submitting hot take as:", user);
+
     await addHotTake({
       text: trimmed,
-      author: auth.currentUser?.displayName ?? "Anonymous",
+      author: user?.displayName ?? "Anonymous",
     });
+
+    console.log("Hot take submitted with text:", trimmed);
 
     setText("");
     setOpen(false);
