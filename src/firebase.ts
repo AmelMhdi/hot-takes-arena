@@ -98,6 +98,7 @@ export const sendDebateMessage = async (
   turn: number
 ) => {
   const debateRef = doc(db, "debates", debateId);
+  console.log("Writing to debate:", debateId, uid, text, turn);
   return updateDoc(debateRef, {
     messages: arrayUnion({
       uid,
@@ -204,6 +205,19 @@ export const endDebateAndSetWinner = async (debateId: string) => {
     active: false,
     winnerId: winnerId ?? null,
   });
+
+  // Update user stats
+  if (winnerId) {
+    if (winnerId === data.challengerId) {
+      await incrementUserWin(data.challengerId, "Challenger");
+      if (data.opponentId) {
+        await incrementUserLoss(data.opponentId, "Opponent");
+      }
+    } else {
+      await incrementUserWin(data.opponentId!, "Opponent");
+      await incrementUserLoss(data.challengerId, "Challenger");
+    }
+  }
 
   return winnerId;
 };

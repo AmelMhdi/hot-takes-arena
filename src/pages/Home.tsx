@@ -40,7 +40,7 @@ export default function Home() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-serif text-4xl font-bold text-charcoal-900 mb-2 text-balance">
-            🔥 Latest Hot Takes
+            Latest Hot Takes
           </h1>
           <p className="font-sans text-lg text-sage-600">
             Share your boldest opinions and spark meaningful debates
@@ -96,9 +96,6 @@ export default function Home() {
                     {/* TODO: dynamiser */}
                     🔥 23
                   </div>
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-stone-500">
-                    Click to debate
-                  </div>
                 </div>
               </div>
 
@@ -107,10 +104,6 @@ export default function Home() {
                   <span className="flex items-center space-x-1">
                     <span>💬</span>
                     <span>Join debate</span>
-                  </span>
-                  <span className="flex items-center space-x-1">
-                    <span>👥</span>
-                    <span>Community</span>
                   </span>
                 </div>
                 <div className="text-sage-600 group-hover:text-charcoal-800 transition-colors">
