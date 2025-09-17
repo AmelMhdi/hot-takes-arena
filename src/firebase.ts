@@ -6,7 +6,22 @@ import {
   signInWithPopup,
   signOut as fbSignOut,
 } from "firebase/auth";
-import { addDoc, arrayUnion, collection, doc, getFirestore, onSnapshot, orderBy, query, serverTimestamp, updateDoc, getDoc, type DocumentData, increment, setDoc } from "firebase/firestore";
+import { 
+  addDoc, 
+  arrayUnion, 
+  collection, 
+  doc, 
+  getFirestore, 
+  onSnapshot, 
+  orderBy, 
+  query, 
+  serverTimestamp, 
+  updateDoc, 
+  getDoc, 
+  type DocumentData, 
+  increment, 
+  setDoc 
+} from "firebase/firestore";
 import type { DebateDoc, HotTake } from "./types";
 
 const firebaseConfig = {
@@ -196,13 +211,15 @@ export const endDebateAndSetWinner = async (debateId: string) => {
 // --- User stats ---
 export const incrementUserWin = async (
   uid: string,
-  displayName: string | null
+  displayName: string | null,
+  photoURL?: string | null
 ) => {
   const userRef = doc(db, "users", uid);
   await setDoc(
     userRef,
     {
       displayName: displayName ?? "Anonymous",
+      photoURL: photoURL ?? null,
       wins: increment(1),
       losses: increment(0),
     },
@@ -212,13 +229,15 @@ export const incrementUserWin = async (
 
 export const incrementUserLoss = async (
   uid: string,
-  displayName: string | null
+  displayName: string | null,
+  photoURL?: string | null
 ) => {
   const userRef = doc(db, "users", uid);
   await setDoc(
     userRef,
     {
       displayName: displayName ?? "Anonymous",
+      photoURL: photoURL ?? null,
       wins: increment(0),
       losses: increment(1),
     },
