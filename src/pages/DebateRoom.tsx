@@ -42,9 +42,9 @@ const DebateRoom: React.FC = () => {
 
     if (winnerId && user) {
       if (winnerId === user.uid) {
-        await incrementUserWin(user.uid, user.displayName);
+        await incrementUserWin(user.uid, user.displayName, user.photoURL);
       } else {
-        await incrementUserLoss(user.uid, user.displayName);
+        await incrementUserLoss(user.uid, user.displayName, user.photoURL);
       }
     }
   };
