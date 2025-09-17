@@ -24,8 +24,10 @@ export interface DebateDoc {
     createdAt: any; // Firestore timestamp
 }
 
-export interface UserStats {
+export interface UserDoc {
+    id: string; // Firestore document ID (same as user ID)
     displayName: string;
+    photoURL?: string;
     wins: number;
     losses: number;
 }

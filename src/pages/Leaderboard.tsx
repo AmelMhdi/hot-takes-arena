@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
+import type { UserDoc } from "@/types";
 
 const Leaderboard: React.FC = () => {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<UserDoc[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
       const q = query(collection(db, "users"), orderBy("wins", "desc"));
       const snap = await getDocs(q);
-      const list = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const list = snap.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          displayName: data.displayName || "Anonymous",
+          wins: typeof data.wins === "number" ? data.wins : 0,
+          losses: typeof data.losses === "number" ? data.losses : 0,
+        } as UserDoc;
+      });
       setUsers(list);
     };
     fetchUsers();
@@ -17,7 +26,7 @@ const Leaderboard: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl mb-4 font-bold text-charcoal-900">🏆 Leaderboard</h1>
+      <h1 className="text-2xl mb-4 font-bold text-charcoal-900">Leaderboard</h1>
       <div className="overflow-hidden rounded-lg border border-sage-200 bg-cream-50">
         <table className="w-full">
           <thead className="bg-sage-100">
