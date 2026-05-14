@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { addHotTake, subscribeToTakes, auth, signInAnon } from "../firebase";
 import type { HotTake } from "../types";
-import { useAuth } from "../auth/AuthContext";
+// import { useAuth } from "../auth/AuthContext";
 import PostTakeModal from "../components/PostTakeModal";
 
 export default function Home() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [takes, setTakes] = useState<HotTake[]>([]);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
@@ -97,8 +97,7 @@ export default function Home() {
                 {/* Vote count + hover */}
                 <div className="ml-4 flex flex-col items-center space-y-2">
                   <div className="px-3 py-1 rounded-full text-sm font-medium bg-peach-200 text-peach-800">
-                    {/* TODO: dynamiser */}
-                    🔥 23
+                    {t.debatesCount} debate{t.debatesCount !== 1 || t.debatesCount > 0 && "s"}
                   </div>
                 </div>
               </div>

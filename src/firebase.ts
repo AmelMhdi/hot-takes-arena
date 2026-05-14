@@ -49,9 +49,10 @@ export const signOut = () => fbSignOut(auth);
 // --- Hot takes collection ---
 export const takesCollection = collection(db, "hot_takes");
 
-export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp">) => {
+export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp" | "debatesCount">) => {
   return addDoc(takesCollection, {
     ...take,
+    debatesCount: 0,
     timestamp: Date.now(),
   });
 };
@@ -65,6 +66,7 @@ export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
         id: doc.id,
         text: data.text ?? "",
         author: data.authorName ?? "Anonymous",
+        debatesCount: data.debatesCount ?? 0,
         timestamp: typeof data.timestamp === "number" ? data.timestamp : 0,
       };
     });
@@ -76,13 +78,19 @@ export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
 export const debatesCollection = collection(db, "debates");
 
 export const createDebate = async (takeId: string, challengerId: string) => {
-  return addDoc(debatesCollection, {
+  await addDoc(takesCollection, {
     takeId,
     challengerId,
     opponentId: null,
     messages: [],
     active: true,
     createdAt: serverTimestamp(),
+  });
+  
+  const takeRef = doc(db, "hot_takes", takeId);
+
+  await updateDoc(takeRef, {
+    debatesCount: increment(1),
   });
 };
 

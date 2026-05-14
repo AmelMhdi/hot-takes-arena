@@ -3,6 +3,7 @@ export interface HotTake {
     text: string;
     author: string;
     timestamp: number;
+    debatesCount: number;
 }
 
 export interface DebateMessage {
