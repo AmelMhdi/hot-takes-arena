@@ -29,7 +29,8 @@ export default function Home() {
 
     await addHotTake({
       text: trimmed,
-      author: user?.displayName ?? "Anonymous",
+      authorId: user?.uid,
+      authorName: user?.displayName ?? "Anonymous",
     });
 
     console.log("Hot take submitted with text:", trimmed);
@@ -85,7 +86,7 @@ export default function Home() {
                   </p>
                   <div className="flex items-center space-x-4 text-sm text-stone-600">
                     <span className="font-medium">
-                      by {t.author ?? "Anonymous"}
+                      by {t.authorName ?? "Anonymous"}
                     </span>
                     <span>•</span>
                     <span>

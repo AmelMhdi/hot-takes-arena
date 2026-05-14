@@ -65,7 +65,8 @@ export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
       return {
         id: doc.id,
         text: data.text ?? "",
-        author: data.authorName ?? "Anonymous",
+        authorId: data.authorId ?? null,
+        authorName: data.authorName ?? "Anonymous",
         debatesCount: data.debatesCount ?? 0,
         timestamp: typeof data.timestamp === "number" ? data.timestamp : 0,
       };
@@ -78,7 +79,7 @@ export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
 export const debatesCollection = collection(db, "debates");
 
 export const createDebate = async (takeId: string, challengerId: string) => {
-  await addDoc(takesCollection, {
+  await addDoc(debatesCollection, {
     takeId,
     challengerId,
     opponentId: null,
@@ -95,6 +96,7 @@ export const createDebate = async (takeId: string, challengerId: string) => {
 };
 
 export const joinDebate = async (debateId: string, opponentId: string) => {
+  if (!opponentId) return;
   const debateRef = doc(db, "debates", debateId);
   return updateDoc(debateRef, { opponentId });
 };

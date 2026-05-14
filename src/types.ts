@@ -1,7 +1,9 @@
 export interface HotTake {
     id?: string;
     text: string;
-    author: string;
+    // author: string;
+    authorId?: string; // optional field to store the user ID of the author
+    authorName: string; // display name of the author
     timestamp: number;
     debatesCount: number;
 }

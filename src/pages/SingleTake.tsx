@@ -98,7 +98,7 @@ const SingleTake: React.FC = () => {
       <div className="mb-6">
         <h1 className="text-xl font-bold mb-4 text-charcoal-900">{getTitleFromText(hotTake.text)}</h1>
         <div className="text-sm text-charcoal-600">
-          <span>by {hotTake.author}</span>
+          <span>by {hotTake.authorName ?? "Anonymous"}</span>
           <span> • </span>
           <span>{new Date(hotTake.timestamp).toLocaleDateString()}</span>
         </div>
