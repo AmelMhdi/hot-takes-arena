@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { addHotTake, subscribeToTakes, auth, signInAnon } from "../firebase";
+import { addHotTake, subscribeToTakes, signInAnon } from "../firebase";
 import type { HotTake } from "../types";
-// import { useAuth } from "../auth/AuthContext";
 import PostTakeModal from "../components/PostTakeModal";
+import { useAuth } from "../auth/AuthContext";
 
 export default function Home() {
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const [takes, setTakes] = useState<HotTake[]>([]);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
@@ -20,7 +20,7 @@ export default function Home() {
     const trimmed = text.trim();
     if (!trimmed) return;
 
-    // Ensure at least anonymous auth for write rules
+    // Ensure anonymous auth for write rules
     if (!user) {
       await signInAnon();
     }
