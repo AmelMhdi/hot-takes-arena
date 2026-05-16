@@ -54,6 +54,9 @@ export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp" | "debat
     ...take,
     debatesCount: 0,
     timestamp: Date.now(),
+    likes: [],
+    dislikes: [],
+    counter: 0,
   });
 };
 
@@ -69,11 +72,40 @@ export const subscribeToTakes = (callback: (takes: HotTake[]) => void) => {
         authorName: data.authorName ?? "Anonymous",
         debatesCount: data.debatesCount ?? 0,
         timestamp: typeof data.timestamp === "number" ? data.timestamp : 0,
+        likes: Array.isArray(data.likes) ? data.likes : [],
+        dislikes: Array.isArray(data.dislikes) ? data.dislikes : [],
+        counter: typeof data.counter === "number" ? data.counter : 0,
       };
     });
     callback(list);
   });
 };
+
+export const voteTake = async (takeId: string, uid: string, type: "like" | "dislike") => {
+  const takeRef = doc(db, "hot_takes", takeId);
+  const snap = await getDoc(takeRef);
+  
+  if (!snap.exists()) return;
+
+  const data = snap.data() as DocumentData;
+
+  let likes = data.likes || [];
+  let dislikes = data.dislikes || [];
+
+  // remove existing votes
+  likes = likes.filter((id: string) => id !== uid);
+  dislikes = dislikes.filter((id: string) => id !== uid);
+
+  // add a new vote
+  if (type === "like") likes.push(uid);
+  else dislikes.push(uid);
+
+  await updateDoc(takeRef, {
+    likes,
+    dislikes,
+    counter: likes.length - dislikes.length,
+  });
+}
 
 // --- Debates ---
 export const debatesCollection = collection(db, "debates");
@@ -169,7 +201,7 @@ export const upvoteMessage = async (
   if (!snap.exists()) return;
 
   const data = snap.data() as DebateDoc;
-  if (data.active) return; // ✅ only after debate ends
+  if (data.active) return; // only after debate ends
 
   const messages = Array.isArray(data.messages) ? [...data.messages] : [];
   const msg = messages[messageIndex];

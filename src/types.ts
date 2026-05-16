@@ -1,11 +1,14 @@
 export interface HotTake {
     id?: string;
     text: string;
-    // author: string;
     authorId?: string; // optional field to store the user ID of the author
     authorName: string; // display name of the author
     timestamp: number;
     debatesCount: number;
+
+    likes: string[]; // array of user IDs who liked this hot take
+    dislikes: string[]; // array of user IDs who disliked this hot take
+    counter: number; // score (likes - dislikes)
 }
 
 export interface DebateMessage {

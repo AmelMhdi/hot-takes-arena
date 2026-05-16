@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { addHotTake, subscribeToTakes, signInAnon } from "../firebase";
+import { addHotTake, subscribeToTakes, signInAnon, voteTake } from "../firebase";
 import type { HotTake } from "../types";
 import PostTakeModal from "../components/PostTakeModal";
 import { useAuth } from "../auth/AuthContext";
@@ -31,6 +31,9 @@ export default function Home() {
       text: trimmed,
       authorId: user?.uid,
       authorName: user?.displayName ?? "Anonymous",
+      likes: [],
+      dislikes: [],
+      counter: 0,
     });
 
     console.log("Hot take submitted with text:", trimmed);
@@ -98,9 +101,39 @@ export default function Home() {
                 {/* Vote count + hover */}
                 <div className="ml-4 flex flex-col items-center space-y-2">
                   <div className="px-3 py-1 rounded-full text-sm font-medium bg-peach-200 text-peach-800">
-                    {t.debatesCount} debate{t.debatesCount !== 1 || t.debatesCount > 0 && "s"}
+                    {t.debatesCount} debate{t.debatesCount !== 1 ? "s" : ""}
                   </div>
                 </div>
+              </div>
+
+              {/* Votes */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (!user || !t.id) return;
+
+                    voteTake(t.id, user.uid, "like");
+                  }}
+                  className="px-2 py-1 rounded-md bg-sage-100 hover:bg-sage-200 transition-colors"
+                >
+                  👍 {t.likes.length}
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    if (!user || !t.id) return;
+                    voteTake(t.id, user.uid, "dislike");
+                  }}
+                  className="px-2 py-1 rounded-md bg-sage-100 hover:bg-sage-200 transition-colors"
+                >
+                  👎 {t.dislikes.length}
+                </button>
               </div>
 
               <div className="flex items-center justify-between pt-3 border-t border-stone-200">
@@ -114,6 +147,7 @@ export default function Home() {
                   →
                 </div>
               </div>
+
             </Link>
           ))
         )}
