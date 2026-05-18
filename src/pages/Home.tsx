@@ -107,7 +107,7 @@ export default function Home() {
               </div>
 
               {/* Votes */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-4">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
