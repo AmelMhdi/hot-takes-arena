@@ -41,17 +41,26 @@ const Leaderboard: React.FC = () => {
         <table className="w-full">
           <thead className="bg-sage-100">
             <tr>
-              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">Rank</th>
-              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">Player</th>
-              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">Wins</th>
-              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">Losses</th>
-              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">Win Rate</th>
+              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">
+                Rank
+              </th>
+
+              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">
+                Debater
+              </th>
+
+              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">
+                Score
+              </th>
+
+              <th className="p-3 text-left font-semibold text-charcoal-800 border-b border-sage-200">
+                W/L
+              </th>
             </tr>
           </thead>
           <tbody>
             {users.map((u, i) => {
-              const total = (u.wins || 0) + (u.losses || 0);
-              const winRate = total > 0 ? Math.round((u.wins / total) * 100) : 0;
+              const score = (u.wins || 0) - (u.losses || 0);
 
               return (
                 <tr
@@ -60,7 +69,10 @@ const Leaderboard: React.FC = () => {
                     u.id === currentUid ? "bg-sage-50 font-bold" : ""
                   }`}
                 >
-                  <td className="p-3 text-charcoal-700 border-b border-stone-200">{i + 1}</td>
+                  <td className="p-3 text-charcoal-700 border-b border-stone-200">
+                    #{i + 1}
+                  </td>
+
                   <td className="p-3 text-charcoal-800 flex items-center gap-2 border-b border-stone-200">
                     {u.photoURL && (
                       <img
@@ -69,11 +81,18 @@ const Leaderboard: React.FC = () => {
                         className="h-6 w-6 rounded-full"
                       />
                     )}
+
                     {u.displayName || "Anonymous"}
                   </td>
-                  <td className="p-3 text-sage-600 font-semibold border-b border-stone-200">{u.wins || 0}</td>
-                  <td className="p-3 text-stone-500 border-b border-stone-200">{u.losses || 0}</td>
-                  <td className="p-3 text-charcoal-700 border-b border-stone-200">{winRate}%</td>
+
+                  <td className="p-3 text-sage-700 font-bold border-b border-stone-200">
+                    {score > 0 ? "+" : ""}
+                    {score}
+                  </td>
+
+                  <td className="p-3 text-charcoal-700 border-b border-stone-200">
+                    {u.wins || 0}W / {u.losses || 0}L
+                  </td>
                 </tr>
               );
             })}
