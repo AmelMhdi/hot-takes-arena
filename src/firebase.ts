@@ -25,13 +25,12 @@ import {
 import type { DebateDoc, HotTake } from "./types";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAkqAguGpDYW-b86OySpzuR5gnicdD40TA",
-  authDomain: "hot-takes-arena.firebaseapp.com",
-  projectId: "hot-takes-arena",
-  storageBucket: "hot-takes-arena.appspot.com",
-  messagingSenderId: "1043167162375",
-  appId: "1:1043167162375:web:987da1c1ffe88d60e77aa2",
-  measurementId: "G-5Y667H1X0C"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Init Firebase
