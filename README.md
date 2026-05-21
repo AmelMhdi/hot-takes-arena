@@ -4,14 +4,30 @@
 
 A web app where users post their *spiciest opinions* (e.g., *"Skyrim is overrated"*, *"Pineapple belongs on pizza."*).
 
-- Others can **challenge** those takes in "debate rounds."
-- Debates happen in a *turn-based* chat format.
-- The community votes on who "won" after reading the exchange.
+Others users can:
+- challenge takes in turn-bases debate rounds,
+- react with likes of dislikes,
+- and compete to become the most feared debater on the platform. 
 
 ## **Core Features**
 
-- Leaderboard of the most *feared debaters*.
-- Ability to "like" or dislike takes without debating.
-- Optional anonymous mode.
+- Create and browse hot takes
+- Turn-based debate system
+- Like / dislike reactions on takes
+- Google authentication + anonymous mode
+- Real-time updates with Firebase
+- Public leaderboard *(work in progress)*
 
-## Project in progress
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Firebase Authentication
+- Cloud Firestore
+- TailwindCSS
+
+## Project Status
+
+This project is currently a work in progress.  
+The main features are implemented, but some systems (leaderboard ranking logic and debate flow improvements) are still being refined.
