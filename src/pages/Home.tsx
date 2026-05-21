@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { addHotTake, subscribeToTakes, signInAnon, voteTake } from "../firebase";
+import { addHotTake, subscribeToTakes, signInAnon, voteTake, auth } from "../firebase";
 import type { HotTake } from "../types";
 import PostTakeModal from "../components/PostTakeModal";
 import { useAuth } from "../auth/AuthContext";
@@ -21,19 +21,20 @@ export default function Home() {
     if (!trimmed) return;
 
     // Ensure anonymous auth for write rules
-    if (!user) {
+    if (!auth.currentUser) {
       await signInAnon();
     }
 
-    console.log("Submitting hot take as:", user);
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) return;
+
+    console.log("Submitting hot take as:", currentUser);
 
     await addHotTake({
       text: trimmed,
-      authorId: user?.uid,
-      authorName: user?.displayName ?? "Anonymous",
-      likes: [],
-      dislikes: [],
-      counter: 0,
+      authorId: currentUser.uid,
+      authorName: currentUser.displayName ?? "Anonymous",
     });
 
     console.log("Hot take submitted with text:", trimmed);

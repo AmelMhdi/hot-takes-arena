@@ -16,6 +16,7 @@ const DebateRoom: React.FC = () => {
   const [debate, setDebate] = useState<DebateDoc | null>(null);
   const [input, setInput] = useState("");
   const user = auth.currentUser;
+  const isChallenger = user && (user.uid === debate?.challengerId || user.uid == debate?.opponentId);
 
   useEffect(() => {
     if (!debateId) return;
@@ -93,7 +94,7 @@ const DebateRoom: React.FC = () => {
         ))}
       </div>
 
-      {debate.active && (
+      {debate.active && isChallenger && (
         <div className="flex gap-3 mt-6">
           <input
             value={input}

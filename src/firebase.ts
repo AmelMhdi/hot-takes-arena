@@ -49,7 +49,7 @@ export const signOut = () => fbSignOut(auth);
 // --- Hot takes collection ---
 export const takesCollection = collection(db, "hot_takes");
 
-export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp" | "debatesCount">) => {
+export const addHotTake = async (take: Omit<HotTake, "id" | "timestamp" | "debatesCount" | "likes" | "dislikes" | "counter">) => {
   return addDoc(takesCollection, {
     ...take,
     debatesCount: 0,
