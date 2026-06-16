@@ -101,7 +101,7 @@ export default function Layout({ children }: LayoutProps) {
       <footer className="bg-cream-100 border-t border-stone-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <h3 className="font-serif text-lg font-semibold text-charcoal-900 mb-2">Hot Takes Arena</h3>
+            <h2 className="font-serif text-lg font-semibold text-charcoal-900 mb-2">Hot Takes Arena</h2>
             <p className="font-sans text-sm text-stone-600">Where bold opinions spark meaningful conversations</p>
           </div>
         </div>
@@ -151,22 +151,20 @@ function AuthControls({
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <button
-        onClick={signInWithGoogle}
-        className="bg-sage-600 hover:bg-sage-700 text-cream-50 px-2 sm:px-3 py-1 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
-      >
-        {compact ? "Sign in" : "Sign in with Google"}
-      </button>
-      {!compact && (
-        <button
-          onClick={signInAnon}
-          className="bg-stone-200 hover:bg-stone-300 text-charcoal-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors"
-          title="Continue as guest"
-        >
-          Guest
-        </button>
-      )}
-    </div>
-  );
+  <div className="flex items-center gap-2">
+    <button
+      onClick={signInWithGoogle}
+      className="bg-sage-600 hover:bg-sage-700 text-cream-50 px-2 sm:px-3 py-1 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+    >
+      {compact ? "Google" : "Sign in with Google"}
+    </button>
+    <button
+      onClick={signInAnon}
+      className="bg-stone-200 hover:bg-stone-300 text-charcoal-700 px-2 sm:px-3 py-1 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+      title="Continue as guest"
+    >
+      Guest
+    </button>
+  </div>
+);
 }
