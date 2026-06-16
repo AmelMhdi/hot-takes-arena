@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, type User } from "firebase/auth";
+import { getRedirectResult, onAuthStateChanged, type User } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 
@@ -21,8 +21,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           {
             displayName: u.displayName ?? "Anonymous",
             photoURL: u.photoURL ?? "",
-            wins: 0,
-            losses: 0,
           },
           { merge: true }
         );
@@ -31,6 +29,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     return () => off();
   }, []);
+
+  useEffect(() => {
+    getRedirectResult(auth).catch((err) => {
+      console.error("Redirect sign-in error:", err);
+    })
+  }, [])
 
   return (
     <AuthContext.Provider value={{ user, loading }}>

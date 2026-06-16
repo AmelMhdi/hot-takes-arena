@@ -4,6 +4,7 @@ import {
   GoogleAuthProvider, 
   signInAnonymously, 
   signInWithPopup,
+  signInWithRedirect,
   signOut as fbSignOut,
 } from "firebase/auth";
 import { 
@@ -41,9 +42,20 @@ export const provider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 
 // Sign-in functions
-export const signInWithGoogle = () => signInWithPopup(auth, provider);
+const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+export const signInWithGoogle = async () => {
+  const provider = new  GoogleAuthProvider();
+  if (isMobile()) {
+    await signInWithRedirect(auth, provider);
+  } else {
+    await signInWithPopup(auth, provider);
+  }
+};
+
+// export const signInWithGoogle = () => signInWithPopup(auth, provider);
 export const signInAnon = () => signInAnonymously(auth);
-export const signOut = () => fbSignOut(auth);
+// export const signOut = () => fbSignOut(auth);
 
 // --- Hot takes collection ---
 export const takesCollection = collection(db, "hot_takes");
