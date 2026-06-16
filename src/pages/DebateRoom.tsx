@@ -51,7 +51,7 @@ const DebateRoom: React.FC = () => {
   };
 
   return (
-    <div className="p-6 rounded-xl bg-cream-100 border border-stone-200 shadow-sm">
+    <div className="p-4 sm:p-6 rounded-xl bg-cream-100 border border-stone-200 shadow-sm">
       <h2 className="text-2xl font-bold text-charcoal-900 mb-4">Debate Room</h2>
 
       {debate.winnerId ? (
@@ -68,7 +68,7 @@ const DebateRoom: React.FC = () => {
         {debate.messages.map((m, idx) => (
           <div 
             key={idx} 
-            className="flex items-center justify-between bg-cream-50 border border-stone-200 p-4 rounded-lg hover:bg-cream-100 transition-colors duration-200"
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-cream-50 border border-stone-200 p-4 rounded-lg hover:bg-cream-100 transition-colors duration-200"
           >
             <span className="text-charcoal-800">
               <b className="text-charcoal-900">
@@ -95,7 +95,7 @@ const DebateRoom: React.FC = () => {
       </div>
 
       {debate.active && isChallenger && (
-        <div className="flex gap-3 mt-6">
+        <div className="flex items-center sm:flex-row gap-3 mt-6">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}

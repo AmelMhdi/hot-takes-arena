@@ -20,7 +20,6 @@ export default function Home() {
     const trimmed = text.trim();
     if (!trimmed) return;
 
-    // Ensure anonymous auth for write rules
     if (!auth.currentUser) {
       await signInAnon();
     }
@@ -46,19 +45,19 @@ export default function Home() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-serif text-4xl font-bold text-charcoal-900 mb-2 text-balance">
+          <h1 className="font-serif text-2xl sm:text-4xl font-bold text-charcoal-900 mb-2 text-balance">
             Latest Hot Takes
           </h1>
-          <p className="font-sans text-lg text-sage-600">
+          <p className="font-sans text-base sm:text-lg text-sage-600">
             Share your boldest opinions and spark meaningful debates
           </p>
         </div>
 
         <button
           onClick={() => setOpen(true)}
-          className="bg-sage-600 hover:bg-sage-700 text-cream-50 font-medium px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+          className="w-full sm:w-auto bg-sage-600 hover:bg-sage-700 text-cream-50 font-medium px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
         >
           Post Hot Take
         </button>
@@ -81,14 +80,14 @@ export default function Home() {
             <Link
               to={`/take/${t.id}`}
               key={t.id}
-              className="group bg-cream-100 p-6 rounded-2xl shadow-md hover:shadow-lg border border-stone-200 transition-all duration-300 hover:border-sage-400"
+              className="group bg-cream-100 p-4 sm:p-6 rounded-2xl shadow-md hover:shadow-lg border border-stone-200 transition-all duration-300 hover:border-sage-400"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <p className="font-sans text-lg leading-relaxed text-charcoal-800 mb-3 text-balance">
+                  <p className="font-sans text-base sm:text-lg leading-relaxed text-charcoal-800 mb-3 text-balance">
                     {t.text}
                   </p>
-                  <div className="flex items-center space-x-4 text-sm text-stone-600">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-stone-600">
                     <span className="font-medium">
                       by {t.authorName ?? "Anonymous"}
                     </span>
